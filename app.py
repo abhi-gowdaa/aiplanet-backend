@@ -7,7 +7,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from io import BytesIO
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables (gemini api key )from .env file
 load_dotenv()
 
 app = FastAPI()
