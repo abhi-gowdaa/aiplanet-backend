@@ -101,7 +101,7 @@ async def upload(files: UploadFile = File(...)):
         get_vector_store(text_chunks)
     return files.filename
 
-# Endpoint to handle message sending with a question to the AI
+#Endpoint to handle message sending with a question to the AI
 @app.post("/sendmessage")
 async def sendMessage(question: str):
     global pdfText
@@ -115,3 +115,5 @@ async def sendMessage(question: str):
 
     except Exception as e:
         print(f"unable to process{e}")
+
+#route , /,sendmessage
