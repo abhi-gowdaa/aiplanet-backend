@@ -25,7 +25,7 @@ app.add_middleware(
 
 global pdfText, vector_store
 pdfText = ""
-vector_store = None  # Ensure this is set globally
+vector_store = None  
 
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
@@ -91,8 +91,8 @@ async def upload(files: UploadFile = File(...)):
         text_chunks = get_text_chunks(pdfText)
         get_vector_store(text_chunks)
         if vector_store is None:
-            return {"error": "Failed to create vector store"}
-    return {"filename": files.filename}
+            return "Failed to create vector store"
+    return files.filename
 
 @app.post("/sendmessage")
 async def sendMessage(question: str):
