@@ -7,15 +7,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from io import BytesIO
 from dotenv import load_dotenv
 
-# Load environment variables (gemini api key )from .env file
 load_dotenv()
-
 app = FastAPI()
-
 # CORS settings to allow requests from localhost (React frontend)
-origins = [
+origins=[
     "http://localhost:3000",
-]
+ ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,11 +24,12 @@ app.add_middleware(
 
 # Global variable to store PDF text across functions
 global pdfText
-pdfText = ""
+pdfText=""
 
-# Initialize Google Generative AI model and embeddings
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+# result=llm.invoke("hi")
+# print(result.content)
 
 # Load FAISS vector store if available, else set to None
 try:
@@ -42,6 +40,7 @@ except Exception as e:
     vector_store = None
     print(f"Failed to load FAISS index at startup: {e}")
 
+
 # Function to read and extract text from a PDF
 def get_pdf_txt(pdf_doc):
     text = ""
@@ -50,8 +49,9 @@ def get_pdf_txt(pdf_doc):
         for page in pdf_reader.pages:
             text += page.extract_text()
     except Exception as e:
-        print(f"Error reading PDF: {e}")
+        print(f"error in reading {e}")
     return text
+
 
 # Function to split text into smaller chunks
 def get_text_chunks(text):
@@ -68,15 +68,14 @@ def get_vector_store(text_chunks):
 # Function to create a prompt with a specific question and context
 def get_conversational_chain(context, question):
     prompt_template = f"""
-    Answer the question as detailed as possible from the provided context. Make sure to provide all details in 100 words, not more.
-    If the answer is not in the context, just say "answer is not available in the context."
-    Do not provide a wrong answer, but if the question relates to provided contetx, you may give 1 lines, but no more.
-
+    Answer the question as detailed as possible from the provided context,make sure to provide all the details in 100 words not more than that, if the answer is not in the
+    provided context just say," answer is not available in the context",dont provide the wrong answer but give some output if related \n\n
     Context:\n {context}>\n
-    Question:\n{question}\n
+    Question: \n{question}\n
     
     Answer:
     """
+
     return prompt_template
 
 # Basic endpoint to confirm the API is running
@@ -84,24 +83,23 @@ def get_conversational_chain(context, question):
 def index():
     global pdfText
     pdfText = ""
-    return "successful"
+    return "sucessfull"
 
 # Endpoint to upload a PDF file and extract its text
 @app.post("/")
 async def upload(files: UploadFile = File(...)):
     global pdfText
     allText = ""
-    pdf = await files.read()  # Read the PDF file
-    pdf_doc = BytesIO(pdf)  # Create a BytesIO stream to use py2pdf
-    text = get_pdf_txt(pdf_doc)  # Extract text from PDF
+    pdf = await files.read()
+    pdf_doc = BytesIO(pdf)
+    text = get_pdf_txt(pdf_doc)
     allText = text
-    pdfText += allText  # Add text to global pdfText
+    pdfText =pdfText+ allText
 
-    # Create vector store if it doesn't exist
     if not vector_store:
         text_chunks = get_text_chunks(pdfText)
         get_vector_store(text_chunks)
-    return files.filename  # Return the file name after upload
+    return files.filename
 
 # Endpoint to handle message sending with a question to the AI
 @app.post("/sendmessage")
