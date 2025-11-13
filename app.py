@@ -31,7 +31,7 @@ pdfText = ""
 vector_store = None  
 
 
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite")
 embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
 # Load FAISS vector store if available, else set to None
