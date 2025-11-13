@@ -7,3 +7,4 @@ fastapi
 uvicorn
 python-multipart
 langchain
+langchain_text_splitters
